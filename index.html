@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Trigonometry Flashcards - Section 8.1: The Law of Sines</title>
+<style>
+:root {
+--primary: #4285F4;
+--secondary: #FF3E96;
+--accent: #e74c3c;
+--dark: #34495e;
+--light: #f0f3f8;
+--card-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+--button-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+--heading-color: #5E72E4;
+}
+* {
+margin: 0;
+padding: 0;
+box-sizing: border-box;
+font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+body {
+background: #f0f3f8;
+min-height: 100vh;
+display: flex;
+flex-direction: column;
+align-items: center;
+padding: 20px;
+}
+header {
+text-align: center;
+margin-bottom: 30px;
+color: var(--dark);
+width: 100%;
+max-width: 800px;
+}
+h1 {
+margin-bottom: 10px;
+font-size: 2.2rem;
+color: var(--heading-color);
+text-align: center;
+}
+.subheading {
+font-size: 1.1rem;
+color: var(--dark);
+opacity: 0.8;
+}
+
+.container {
+width: 100%;
+max-width: 800px;
+display: flex;
+flex-direction: column;
+gap: 20px;
+}
+.modes {
+display: flex;
+justify-content: center;
+gap: 15px;
+margin-bottom: 10px;
+}
+.mode-btn {
+padding: 10px 30px;
+border: none;
+border-radius: 50px;
+background: white;
+color: var(--dark);
+cursor: pointer;
+font-weight: 600;
+transition: all 0.3s ease;
+box-shadow: var(--button-shadow);
+}
+
+.mode-btn.active {
+background: var(--secondary);
+color: white;
+}
+.mode-btn:nth-child(2).active {
+background: var(--primary);
+color: white;
+}
+.card-container {
+position: relative;
+perspective: 1500px;
+height: 350px;
+margin-bottom: 20px;
+}
+.card {
+position: absolute;
+width: 100%;
+height: 100%;
+transform-style: preserve-3d;
+transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+border-radius: 15px;
+box-shadow: var(--card-shadow);
+cursor: pointer;
+}
+.card.flipped {
+transform: rotateY(180deg);
+}
+.card-face {
+position: absolute;
+width: 100%;
+height: 100%;
+backface-visibility: hidden;
+display: flex;
+flex-direction: column;
+justify-content: center;
+align-items: center;
+padding: 30px;
+border-radius: 15px;
+overflow: hidden;
+}
+.card-front {
+background: white;
+color: var(--dark);
+}
+.card-back {
+background: var(--dark);
+color: white;
+transform: rotateY(180deg);
+text-align: center;
+}
+.formula {
+font-size: 1.8rem;
+margin-bottom: 20px;
+text-align: center;
+}
+.explanation {
+font-size: 1rem;
+margin-top: 15px;
+text-align: center;
+}
+.card-note {
+position: absolute;
+top: 15px;
+left: 15px;
+background: var(--primary);
+color: white;
+padding: 5px 10px;
+border-radius: 50px;
+font-size: 0.8rem;
+font-weight: bold;
+}
+.card-hint {
+position: absolute;
+bottom: 15px;
+left: 50%;
+transform: translateX(-50%);
+color: rgba(0, 0, 0, 0.5);
+font-size: 0.9rem;
+}
+.controls {
+display: flex;
+justify-content: center;
+gap: 20px;
+width: 100%;
+margin-top: 10px;
+}
+.control-btn {
+padding: 12px 24px;
+border: none;
+border-radius: 50px;
+cursor: pointer;
+font-weight: 600;
+transition: all 0.3s ease;
+background: var(--primary);
+color: white;
+box-shadow: var(--button-shadow);
+display: flex;
+align-items: center;
+justify-content: center;
+gap: 8px;
+}
+.control-btn:hover {
+opacity: 0.9;
+box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+.progress-container {
+width: 100%;
+background-color: rgba(255, 255, 255, 0.5);
+border-radius: 10px;
+height: 8px;
+margin-top: 20px;
+overflow: hidden;
+}
+.progress-bar {
+height: 100%;
+background: var(--primary);
+border-radius: 10px;
+transition: width 0.4s ease;
+}
+.card-counter {
+font-size: 0.9rem;
+color: var(--dark);
+margin-top: 10px;
+text-align: center;
+}
+.quiz-container {
+display: none;
+width: 100%;
+background: white;
+border-radius: 15px;
+padding: 30px;
+box-shadow: var(--card-shadow);
+}
+.quiz-question {
+font-size: 1.2rem;
+margin-bottom: 20px;
+color: var(--dark);
+}
+.quiz-options {
+display: flex;
+flex-direction: column;
+gap: 10px;
+margin-bottom: 20px;
+}
+.quiz-option {
+padding: 15px;
+border: 2px solid #e0e0e0;
+border-radius: 10px;
+cursor: pointer;
+transition: all 0.3s ease;
+}
+.quiz-option:hover {
+background: #f5f5f5;
+}
+.quiz-option.selected {
+border-color: var(--primary);
+background: rgba(52, 152, 219, 0.1);
+}
+.quiz-option.correct {
+border-color: var(--secondary);
+background: rgba(46, 204, 113, 0.1);
+}
+.quiz-option.incorrect {
+border-color: var(--accent);
+background: rgba(231, 76, 60, 0.1);
+}
+.quiz-answer {
+margin-top: 20px;
+padding: 15px;
+border-radius: 10px;
+background: #f8f9fa;
+display: none;
+}
+.quiz-answer h3 {
+color: var(--dark);
+margin-bottom: 10px;
+}
+@media (max-width: 768px) {
+.container {
+padding: 10px;
+}
+.card-container {
+height: 400px;
+}
+.formula {
+font-size: 1.5rem;
+}
+.modes {
+flex-wrap: wrap;
+}
+}
+</style>
+</head>
+<body>
+<header>
+<h1>The Law of Sines</h1>
+<p class="subheading">Section 8.1 Interactive Flashcards</p>
+</header>
+<div class="container">
+<div class="modes">
+<button class="mode-btn active" id="flashcard-btn">Flashcards</button>
+<button class="mode-btn" id="quiz-btn">Quiz</button>
+</div>
+<!-- Flashcards Section -->
+<div class="flashcards-container">
+<div class="card-container">
+<div class="card">
+<div class="card-face card-front">
+<div class="card-note">Law of Sines Formula</div>
+<div class="formula">What is the Law of Sines formula?</div>
+<div class="card-hint">(Click to reveal the formula)</div>
+</div>
+<div class="card-face card-back">
+<div class="formula">a / sin(A) = b / sin(B) = c / sin(C)</div>
+<div class="explanation">
+This formula relates the sides of a triangle to the sines of the angles opposite those sides.
+</div>
+</div>
+</div>
+</div>
+<div class="controls">
+<button class="control-btn" id="prev-btn">Previous</button>
+<button class="control-btn" id="flip-btn">Flip Card</button>
+<button class="control-btn" id="next-btn">Next</button>
+<button class="control-btn" id="random-btn">Random</button>
+</div>
+<div class="progress-container">
+<div class="progress-bar" style="width: 10%;"></div>
+</div>
+<div class="card-counter">Card 1 of 10</div>
+</div>
+<!-- Quiz Section -->
+<div class="quiz-container">
+<div class="quiz-question">
+In triangle ABC, if a = 8, b = 12, and A = 30°, what is the value of B?
+</div>
+<div class="quiz-options">
+<div class="quiz-option">48.6°</div>
+<div class="quiz-option">53.1°</div>
+<div class="quiz-option">45°</div>
+<div class="quiz-option">60°</div>
+</div>
+<button class="control-btn" id="quiz-submit">Submit Answer</button>
+<div class="quiz-answer">
+<h3>Explanation:</h3>
+<p>Using the Law of Sines: a/sin(A) = b/sin(B), so sin(B) = (b × sin(A))/a = (12 × sin(30°))/8 = (12 × 0.5)/8 = 0.75. Therefore, B = sin⁻¹(0.75) ≈ 48.6°.</p>
+</div>
+<div class="controls">
+<button class="control-btn" id="prev-quiz">Previous</button>
+<button class="control-btn" id="next-quiz">Next</button>
+</div>
+</div>
+</div>
+<script>
+// Card data
+const cardData = [
+  {
+    type: 'Law of Sines Formula',
+    front: 'What is the Law of Sines formula?',
+    back: 'a / sin(A) = b / sin(B) = c / sin(C)',
+    explanation: 'This formula relates the sides of a triangle to the sines of the angles opposite those sides.'
+  },
+  {
+    type: 'Area Formula',
+    front: 'What is the area formula using the Law of Sines?',
+    back: 'Area = (1/2) * bc * sin(A) or Area = (1/2) * ab * sin(C)',
+    explanation: 'This formula calculates the area of a triangle when two angles and one side are known.'
+  },
+  {
+    type: 'SSA Case',
+    front: 'What is the SSA (ambiguous) case in the Law of Sines?',
+    back: 'The Side-Side-Angle case can result in 0, 1, or 2 possible triangles.',
+    explanation: 'This occurs when we know two sides and one angle not included between them. The number of solutions depends on the given values.'
+  },
+  {
+    type: 'No Solution Check',
+    front: 'How do you check for a "no solution" case using the Law of Sines?',
+    back: 'If sin(A) > 1 when solving for angle A, or if the given side is too short to form a triangle.',
+    explanation: 'These conditions indicate that a triangle cannot be formed with the given measurements.'
+  },
+  {
+    type: 'Triangle Cases',
+    front: 'For which triangle cases is the Law of Sines useful?',
+    back: 'SAA (Side-Angle-Angle), ASA (Angle-Side-Angle), and SSA (Side-Side-Angle) cases.',
+    explanation: 'The Law of Sines is particularly useful when we know at least one side and two angles, or two sides and the angle opposite one of them.'
+  },
+  {
+    type: 'Finding Missing Angles',
+    front: 'How do you find a missing angle before applying the Law of Sines?',
+    back: 'Use the formula A + B + C = 180°',
+    explanation: 'In a triangle, the sum of all angles is 180 degrees. This can be used to find the third angle when two angles are known.'
+  },
+  {
+    type: 'Two Triangle Solutions',
+    front: 'When does the SSA case result in two possible triangles?',
+    back: 'When the given side is longer than the height but shorter than the other known side.',
+    explanation: 'In this scenario, two different triangles can be formed with the given measurements.'
+  },
+  {
+    type: 'Applications',
+    front: 'What are some real-world applications of the Law of Sines?',
+    back: 'Navigation, surveying, and physics problems.',
+    explanation: 'The Law of Sines is used in many practical scenarios where triangulation is needed to determine distances or angles.'
+  },
+  {
+    type: 'Calculator Usage',
+    front: 'What calculator function should you use when solving for angles with the Law of Sines?',
+    back: 'Use the inverse sine function (sin⁻¹ or arcsin).',
+    explanation: 'The inverse sine function allows you to solve for an angle when you know the value of its sine.'
+  },
+  {
+    type: 'Angle Measurement',
+    front: 'In what unit should angles typically be expressed when using the Law of Sines?',
+    back: 'Degrees (unless stated otherwise).',
+    explanation: 'While radians are often used in calculus, most geometry problems use degrees as the standard unit of angle measurement.'
+  }
+];
+
+// Quiz data
+const quizData = [
+  {
+    question: 'In triangle ABC, if a = 8, b = 12, and A = 30°, what is the value of B?',
+    options: ['48.6°', '53.1°', '45°', '60°'],
+    correctIndex: 0,
+    explanation: 'Using the Law of Sines: a/sin(A) = b/sin(B), so sin(B) = (b × sin(A))/a = (12 × sin(30°))/8 = (12 × 0.5)/8 = 0.75. Therefore, B = sin⁻¹(0.75) ≈ 48.6°.'
+  },
+  {
+    question: 'When using the Law of Sines, which case might result in two possible triangles?',
+    options: ['ASA', 'AAS', 'SSA', 'SAS'],
+    correctIndex: 2,
+    explanation: 'The SSA (Side-Side-Angle) case can result in two possible triangles when the given side is longer than the height but shorter than the other known side.'
+  },
+  {
+    question: 'In a triangle, if sin(A)/a = sin(B)/b, what can you conclude?',
+    options: ['The triangle is equilateral', 'The triangle is isosceles', 'The triangle is right-angled', 'This is always true by the Law of Sines'],
+    correctIndex: 3,
+    explanation: 'This is one form of the Law of Sines, which states that a/sin(A) = b/sin(B) = c/sin(C), or equivalently, sin(A)/a = sin(B)/b = sin(C)/c. This relationship is true for any triangle.'
+  },
+  {
+    question: 'In triangle ABC, if a = 10, b = 15, and A = 25°, how many possible triangles can be formed?',
+    options: ['0', '1', '2', 'Infinite'],
+    correctIndex: 2,
+    explanation: 'This is an SSA case. We can calculate sin(B) = (b × sin(A))/a = (15 × sin(25°))/10 ≈ 0.6326. Since 0 < sin(B) < 1 and we\'re in the ambiguous case, there are two possible triangles with these measurements.'
+  },
+  {
+    question: 'What is the area of a triangle with sides a = 6, b = 8, and included angle C = 30°?',
+    options: ['12', '24', '12√3', '24√3'],
+    correctIndex: 1,
+    explanation: 'The area of a triangle can be calculated as (1/2) × a × b × sin(C) = (1/2) × 6 × 8 × sin(30°) = (1/2) × 6 × 8 × 0.5 = 24 square units.'
+  }
+];
+
+// Variables for tracking state
+let currentCardIndex = 0;
+let currentQuizIndex = 0;
+let isFlipped = false;
+
+// DOM elements
+const flashcardsContainer = document.querySelector('.flashcards-container');
+const quizContainer = document.querySelector('.quiz-container');
+const card = document.querySelector('.card');
+const progressBar = document.querySelector('.progress-bar');
+const cardCounter = document.querySelector('.card-counter');
+
+// Buttons
+const flashcardBtn = document.getElementById('flashcard-btn');
+const quizBtn = document.getElementById('quiz-btn');
+const flipBtn = document.getElementById('flip-btn');
+const prevBtn = document.getElementById('prev-btn');
+const nextBtn = document.getElementById('next-btn');
+const randomBtn = document.getElementById('random-btn');
+const quizSubmitBtn = document.getElementById('quiz-submit');
+const prevQuizBtn = document.getElementById('prev-quiz');
+const nextQuizBtn = document.getElementById('next-quiz');
+
+// Initialize
+updateCard();
+updateQuiz();
+
+// Mode switching
+flashcardBtn.onclick = function() {
+  flashcardBtn.classList.add('active');
+  quizBtn.classList.remove('active');
+  flashcardsContainer.style.display = 'block';
+  quizContainer.style.display = 'none';
+};
+
+quizBtn.onclick = function() {
+  quizBtn.classList.add('active');
+  flashcardBtn.classList.remove('active');
+  flashcardsContainer.style.display = 'none';
+  quizContainer.style.display = 'block';
+};
+
+// Flashcard event listeners
+flipBtn.onclick = toggleFlip;
+card.onclick = toggleFlip;
+prevBtn.onclick = prevCard;
+nextBtn.onclick = nextCard;
+randomBtn.onclick = randomCard;
+
+// Quiz event listeners
+quizSubmitBtn.onclick = checkQuizAnswer;
+prevQuizBtn.onclick = prevQuiz;
+nextQuizBtn.onclick = nextQuiz;
+
+// Option selection
+document.querySelectorAll('.quiz-option').forEach((option, index) => {
+  option.onclick = function() {
+    document.querySelectorAll('.quiz-option').forEach(opt => {
+      opt.classList.remove('selected');
+    });
+    option.classList.add('selected');
+  };
+});
+
+// Flashcard functions
+function toggleFlip() {
+  isFlipped = !isFlipped;
+  card.classList.toggle('flipped');
+}
+
+function prevCard() {
+  isFlipped = false;
+  card.classList.remove('flipped');
+  currentCardIndex = (currentCardIndex - 1 + cardData.length) % cardData.length;
+  updateCard();
+}
+
+function nextCard() {
+  isFlipped = false;
+  card.classList.remove('flipped');
+  currentCardIndex = (currentCardIndex + 1) % cardData.length;
+  updateCard();
+}
+
+function randomCard() {
+  isFlipped = false;
+  card.classList.remove('flipped');
+  let newIndex;
+  do {
+    newIndex = Math.floor(Math.random() * cardData.length);
+  } while (newIndex === currentCardIndex && cardData.length > 1);
+  currentCardIndex = newIndex;
+  updateCard();
+}
+
+function updateCard() {
+  const currentCard = cardData[currentCardIndex];
+  const cardNote = document.querySelector('.card-note');
+  const frontFormula = document.querySelector('.card-front .formula');
+  const backFormula = document.querySelector('.card-back .formula');
+  const explanation = document.querySelector('.explanation');
+  
+  cardNote.textContent = currentCard.type;
+  frontFormula.textContent = currentCard.front;
+  backFormula.textContent = currentCard.back;
+  explanation.textContent = currentCard.explanation;
+  
+  // Update progress
+  progressBar.style.width = `${((currentCardIndex + 1) / cardData.length) * 100}%`;
+  cardCounter.textContent = `${currentCardIndex + 1} / ${cardData.length}`;
+}
+
+// Quiz functions
+function prevQuiz() {
+  currentQuizIndex = (currentQuizIndex - 1 + quizData.length) % quizData.length;
+  updateQuiz();
+}
+
+function nextQuiz() {
+  currentQuizIndex = (currentQuizIndex + 1) % quizData.length;
+  updateQuiz();
+}
+
+function updateQuiz() {
+  const currentQuiz = quizData[currentQuizIndex];
+  const quizQuestion = document.querySelector('.quiz-question');
+  const quizOptions = document.querySelector('.quiz-options');
+  const quizAnswer = document.querySelector('.quiz-answer');
+  
+  quizQuestion.textContent = currentQuiz.question;
+  quizOptions.innerHTML = '';
+  currentQuiz.options.forEach((option, index) => {
+    const optionEl = document.createElement('div');
+    optionEl.className = 'quiz-option';
+    optionEl.textContent = option;
+    optionEl.onclick = function() {
+      document.querySelectorAll('.quiz-option').forEach(opt => {
+        opt.classList.remove('selected');
+      });
+      optionEl.classList.add('selected');
+    };
+    quizOptions.appendChild(optionEl);
+  });
+  
+  quizAnswer.style.display = 'none';
+  quizAnswer.innerHTML = `<h3>Explanation:</h3><p>${currentQuiz.explanation}</p>`;
+}
+
+function checkQuizAnswer() {
+  const selectedOption = document.querySelector('.quiz-option.selected');
+  const quizAnswer = document.querySelector('.quiz-answer');
+  
+  if (!selectedOption) {
+    alert('Please select an answer first!');
+    return;
+  }
+  
+  const options = document.querySelectorAll('.quiz-option');
+  const currentQuiz = quizData[currentQuizIndex];
+  
+  options.forEach((option, index) => {
+    option.classList.remove('correct', 'incorrect');
+    if (index === currentQuiz.correctIndex) {
+      option.classList.add('correct');
+    } else if (option.classList.contains('selected')) {
+      option.classList.add('incorrect');
+    }
+  });
+  
+  quizAnswer.style.display = 'block';
+}
+</script>
+</body>
+</html>
