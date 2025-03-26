@@ -274,7 +274,7 @@ flex-wrap: wrap;
 <div class="container">
 <div class="modes">
 <button class="mode-btn active" id="flashcard-btn">Flashcards</button>
-<button class="mode-btn" id="quiz-btn">Quiz</button>
+<button class="mode-btn" id="tips-btn">Study Tips</button>
 </div>
 <!-- Flashcards Section -->
 <div class="flashcards-container">
@@ -304,26 +304,31 @@ This formula relates the sides of a triangle to the sines of the angles opposite
 </div>
 <div class="card-counter">Card 1 of 10</div>
 </div>
-<!-- Quiz Section -->
-<div class="quiz-container">
-<div class="quiz-question">
-In triangle ABC, if a = 8, b = 12, and A = 30°, what is the value of B?
-</div>
-<div class="quiz-options">
-<div class="quiz-option">48.6°</div>
-<div class="quiz-option">53.1°</div>
-<div class="quiz-option">45°</div>
-<div class="quiz-option">60°</div>
-</div>
-<button class="control-btn" id="quiz-submit">Submit Answer</button>
-<div class="quiz-answer">
-<h3>Explanation:</h3>
-<p>Using the Law of Sines: a/sin(A) = b/sin(B), so sin(B) = (b × sin(A))/a = (12 × sin(30°))/8 = (12 × 0.5)/8 = 0.75. Therefore, B = sin⁻¹(0.75) ≈ 48.6°.</p>
-</div>
-<div class="controls">
-<button class="control-btn" id="prev-quiz">Previous</button>
-<button class="control-btn" id="next-quiz">Next</button>
-</div>
+<!-- Study Tips Section -->
+<div class="tips-container" style="display: none; width: 100%;">
+  <div class="card-container" style="height: auto; min-height: 350px;">
+    <div class="card" style="position: relative; height: auto; min-height: 350px;">
+      <div class="card-face card-front" style="position: relative; height: auto; min-height: 350px; overflow-y: auto;">
+        <div class="card-note">Study Tips</div>
+        <h3 style="margin-bottom: 20px; color: var(--dark);">Tips for Mastering the Law of Sines</h3>
+        <ul style="text-align: left; padding-left: 20px; margin-bottom: 20px;">
+          <li style="margin-bottom: 10px;"><strong>Recognize Triangle Cases:</strong> The Law of Sines is useful for SAA, ASA, and SSA cases.</li>
+          <li style="margin-bottom: 10px;"><strong>Check for No Solution:</strong> If sin(A) > 1 when solving for angle A, no triangle exists.</li>
+          <li style="margin-bottom: 10px;"><strong>Ambiguous Case:</strong> SSA can result in 0, 1, or 2 triangles depending on measurements.</li>
+          <li style="margin-bottom: 10px;"><strong>Find Missing Angles:</strong> Remember that A + B + C = 180° in any triangle.</li>
+          <li style="margin-bottom: 10px;"><strong>Calculator Usage:</strong> Use inverse sine (sin⁻¹) for accurate angle calculations.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="controls">
+    <button class="control-btn" id="prev-tip">Previous</button>
+    <button class="control-btn" id="next-tip">Next</button>
+  </div>
+  <div class="progress-container">
+    <div class="progress-bar tips-progress" style="width: 20%;"></div>
+  </div>
+  <div class="card-counter tips-counter">Tip 1 of 5</div>
 </div>
 </div>
 <script>
@@ -391,43 +396,81 @@ const cardData = [
   }
 ];
 
-// Quiz data
-const quizData = [
+// Study tips data
+const tipsData = [
   {
-    question: 'In triangle ABC, if a = 8, b = 12, and A = 30°, what is the value of B?',
-    options: ['48.6°', '53.1°', '45°', '60°'],
-    correctIndex: 0,
-    explanation: 'Using the Law of Sines: a/sin(A) = b/sin(B), so sin(B) = (b × sin(A))/a = (12 × sin(30°))/8 = (12 × 0.5)/8 = 0.75. Therefore, B = sin⁻¹(0.75) ≈ 48.6°.'
+    title: "Recognize Triangle Cases",
+    content: `<ul style="text-align: left; padding-left: 20px;">
+      <li>The Law of Sines is most useful for these cases:
+        <ul style="padding-left: 20px; margin-top: 5px;">
+          <li>SAA (Side-Angle-Angle)</li>
+          <li>ASA (Angle-Side-Angle)</li>
+          <li>SSA (Side-Side-Angle) - the ambiguous case</li>
+        </ul>
+      </li>
+      <li style="margin-top: 10px;">Knowing which case you're working with helps determine the solving approach.</li>
+      <li style="margin-top: 10px;">For SSA, always check if 0, 1, or 2 triangles are possible before proceeding.</li>
+    </ul>`
   },
   {
-    question: 'When using the Law of Sines, which case might result in two possible triangles?',
-    options: ['ASA', 'AAS', 'SSA', 'SAS'],
-    correctIndex: 2,
-    explanation: 'The SSA (Side-Side-Angle) case can result in two possible triangles when the given side is longer than the height but shorter than the other known side.'
+    title: "Check for Valid Triangles",
+    content: `<ul style="text-align: left; padding-left: 20px;">
+      <li>A triangle cannot exist if:
+        <ul style="padding-left: 20px; margin-top: 5px;">
+          <li>Sin(A) > 1 when using the Law of Sines</li>
+          <li>The sum of any two sides is less than the third side</li>
+          <li>The given side is too short compared to the height</li>
+        </ul>
+      </li>
+      <li style="margin-top: 10px;">Always verify that a valid triangle can be formed with the given measurements.</li>
+    </ul>`
   },
   {
-    question: 'In a triangle, if sin(A)/a = sin(B)/b, what can you conclude?',
-    options: ['The triangle is equilateral', 'The triangle is isosceles', 'The triangle is right-angled', 'This is always true by the Law of Sines'],
-    correctIndex: 3,
-    explanation: 'This is one form of the Law of Sines, which states that a/sin(A) = b/sin(B) = c/sin(C), or equivalently, sin(A)/a = sin(B)/b = sin(C)/c. This relationship is true for any triangle.'
+    title: "Understanding the Ambiguous Case",
+    content: `<ul style="text-align: left; padding-left: 20px;">
+      <li>The SSA case may have:
+        <ul style="padding-left: 20px; margin-top: 5px;">
+          <li>No solution: if the side is too short</li>
+          <li>One solution: if the side is exactly equal to the height</li>
+          <li>Two solutions: if the side is longer than the height but shorter than the other known side</li>
+        </ul>
+      </li>
+      <li style="margin-top: 10px;">Draw diagrams to visualize the possible configurations.</li>
+    </ul>`
   },
   {
-    question: 'In triangle ABC, if a = 10, b = 15, and A = 25°, how many possible triangles can be formed?',
-    options: ['0', '1', '2', 'Infinite'],
-    correctIndex: 2,
-    explanation: 'This is an SSA case. We can calculate sin(B) = (b × sin(A))/a = (15 × sin(25°))/10 ≈ 0.6326. Since 0 < sin(B) < 1 and we\'re in the ambiguous case, there are two possible triangles with these measurements.'
+    title: "Practical Applications",
+    content: `<ul style="text-align: left; padding-left: 20px;">
+      <li>The Law of Sines has many real-world applications:
+        <ul style="padding-left: 20px; margin-top: 5px;">
+          <li>Navigation and GPS positioning</li>
+          <li>Land surveying and map making</li>
+          <li>Engineering calculations</li>
+          <li>Physics problems involving forces and vectors</li>
+        </ul>
+      </li>
+      <li style="margin-top: 10px;">Practice with word problems to strengthen your understanding.</li>
+    </ul>`
   },
   {
-    question: 'What is the area of a triangle with sides a = 6, b = 8, and included angle C = 30°?',
-    options: ['12', '24', '12√3', '24√3'],
-    correctIndex: 1,
-    explanation: 'The area of a triangle can be calculated as (1/2) × a × b × sin(C) = (1/2) × 6 × 8 × sin(30°) = (1/2) × 6 × 8 × 0.5 = 24 square units.'
+    title: "Calculator Tips",
+    content: `<ul style="text-align: left; padding-left: 20px;">
+      <li>When working with the Law of Sines:
+        <ul style="padding-left: 20px; margin-top: 5px;">
+          <li>Use inverse sine (sin⁻¹) for finding angles</li>
+          <li>Keep angles in degrees unless specified otherwise</li>
+          <li>Round answers appropriately (typically to 1-2 decimal places)</li>
+          <li>Be mindful of calculator mode (DEG vs RAD)</li>
+        </ul>
+      </li>
+      <li style="margin-top: 10px;">Double-check calculations, especially when dealing with the ambiguous case.</li>
+    </ul>`
   }
 ];
 
 // Variables for tracking state
 let currentCardIndex = 0;
-let currentQuizIndex = 0;
+let currentTipIndex = 0;
 let isFlipped = false;
 
 // DOM elements
@@ -450,21 +493,34 @@ const nextQuizBtn = document.getElementById('next-quiz');
 
 // Initialize
 updateCard();
-updateQuiz();
+// Initialize tip data
+const tipCard = document.querySelector('.tips-container .card-front');
+if (tipCard && tipsData.length > 0) {
+  const firstTip = tipsData[0];
+  tipCard.innerHTML = `
+    <div class="card-note">Study Tips</div>
+    <h3 style="margin-bottom: 20px; color: var(--dark);">${firstTip.title}</h3>
+    ${firstTip.content}
+  `;
+}
 
 // Mode switching
+const tipsBtn = document.getElementById('tips-btn');
+const tipsContainer = document.querySelector('.tips-container');
+
 flashcardBtn.onclick = function() {
   flashcardBtn.classList.add('active');
-  quizBtn.classList.remove('active');
+  tipsBtn.classList.remove('active');
   flashcardsContainer.style.display = 'block';
-  quizContainer.style.display = 'none';
+  tipsContainer.style.display = 'none';
 };
 
-quizBtn.onclick = function() {
-  quizBtn.classList.add('active');
+tipsBtn.onclick = function() {
+  tipsBtn.classList.add('active');
   flashcardBtn.classList.remove('active');
   flashcardsContainer.style.display = 'none';
-  quizContainer.style.display = 'block';
+  tipsContainer.style.display = 'block';
+  updateTip();
 };
 
 // Flashcard event listeners
@@ -474,20 +530,14 @@ prevBtn.onclick = prevCard;
 nextBtn.onclick = nextCard;
 randomBtn.onclick = randomCard;
 
-// Quiz event listeners
-quizSubmitBtn.onclick = checkQuizAnswer;
-prevQuizBtn.onclick = prevQuiz;
-nextQuizBtn.onclick = nextQuiz;
+// Study tips event listeners
+const prevTipBtn = document.getElementById('prev-tip');
+const nextTipBtn = document.getElementById('next-tip');
+const tipsCounter = document.querySelector('.tips-counter');
+const tipsProgress = document.querySelector('.tips-progress');
 
-// Option selection
-document.querySelectorAll('.quiz-option').forEach((option, index) => {
-  option.onclick = function() {
-    document.querySelectorAll('.quiz-option').forEach(opt => {
-      opt.classList.remove('selected');
-    });
-    option.classList.add('selected');
-  };
-});
+prevTipBtn.onclick = prevTip;
+nextTipBtn.onclick = nextTip;
 
 // Flashcard functions
 function toggleFlip() {
@@ -537,64 +587,31 @@ function updateCard() {
   cardCounter.textContent = `${currentCardIndex + 1} / ${cardData.length}`;
 }
 
-// Quiz functions
-function prevQuiz() {
-  currentQuizIndex = (currentQuizIndex - 1 + quizData.length) % quizData.length;
-  updateQuiz();
+// Study tips functions
+function prevTip() {
+  currentTipIndex = (currentTipIndex - 1 + tipsData.length) % tipsData.length;
+  updateTip();
 }
 
-function nextQuiz() {
-  currentQuizIndex = (currentQuizIndex + 1) % quizData.length;
-  updateQuiz();
+function nextTip() {
+  currentTipIndex = (currentTipIndex + 1) % tipsData.length;
+  updateTip();
 }
 
-function updateQuiz() {
-  const currentQuiz = quizData[currentQuizIndex];
-  const quizQuestion = document.querySelector('.quiz-question');
-  const quizOptions = document.querySelector('.quiz-options');
-  const quizAnswer = document.querySelector('.quiz-answer');
+function updateTip() {
+  const currentTip = tipsData[currentTipIndex];
+  const tipCard = document.querySelector('.tips-container .card-front');
   
-  quizQuestion.textContent = currentQuiz.question;
-  quizOptions.innerHTML = '';
-  currentQuiz.options.forEach((option, index) => {
-    const optionEl = document.createElement('div');
-    optionEl.className = 'quiz-option';
-    optionEl.textContent = option;
-    optionEl.onclick = function() {
-      document.querySelectorAll('.quiz-option').forEach(opt => {
-        opt.classList.remove('selected');
-      });
-      optionEl.classList.add('selected');
-    };
-    quizOptions.appendChild(optionEl);
-  });
+  // Update card content
+  tipCard.innerHTML = `
+    <div class="card-note">Study Tips</div>
+    <h3 style="margin-bottom: 20px; color: var(--dark);">${currentTip.title}</h3>
+    ${currentTip.content}
+  `;
   
-  quizAnswer.style.display = 'none';
-  quizAnswer.innerHTML = `<h3>Explanation:</h3><p>${currentQuiz.explanation}</p>`;
-}
-
-function checkQuizAnswer() {
-  const selectedOption = document.querySelector('.quiz-option.selected');
-  const quizAnswer = document.querySelector('.quiz-answer');
-  
-  if (!selectedOption) {
-    alert('Please select an answer first!');
-    return;
-  }
-  
-  const options = document.querySelectorAll('.quiz-option');
-  const currentQuiz = quizData[currentQuizIndex];
-  
-  options.forEach((option, index) => {
-    option.classList.remove('correct', 'incorrect');
-    if (index === currentQuiz.correctIndex) {
-      option.classList.add('correct');
-    } else if (option.classList.contains('selected')) {
-      option.classList.add('incorrect');
-    }
-  });
-  
-  quizAnswer.style.display = 'block';
+  // Update progress
+  tipsProgress.style.width = `${((currentTipIndex + 1) / tipsData.length) * 100}%`;
+  tipsCounter.textContent = `Tip ${currentTipIndex + 1} of ${tipsData.length}`;
 }
 </script>
 </body>
